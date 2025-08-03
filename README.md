@@ -78,3 +78,22 @@ Output:
 
 Let’s specify some more transformations! Now, let’s sort our data according to the count
 column, which is an integer type</p>
+
+Remember, sort does not modify the DataFrame. We use sort as a transformation that returns a new
+DataFrame by transforming the previous DataFrame.</p>
+Scala:
+```scala
+df.sort("count").explain()
+```
+Python:
+```python
+df.sort("count").explain()
+```
+Output:
+```bash
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- Sort [count#19 ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(count#19 ASC NULLS FIRST, 200), ENSURE_REQUIREMENTS, [plan_id=33]
+      +- FileScan csv [DEST_COUNTRY_NAME#17,ORIGIN_COUNTRY_NAME#18,count#19] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/home/batuhansaylam/Desktop/Big-Data_Spark/end-to-end_example/dat..., PartitionFilters: [], PushedFilters: [], ReadSchema: struct<DEST_COUNTRY_NAME:string,ORIGIN_COUNTRY_NAME:string,count:int>
+```

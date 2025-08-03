@@ -21,7 +21,6 @@ United States,Grenada,62
 Costa Rica,United States,588
 Senegal,United States,40
 ```
-## Transformation
 Spark takes a small portion of the data and then tries to parse the types in those rows in accordance with the types that Spark has accessible in order to obtain the schema information.  When reading in data, you can also choose to tightly specify a schema, which is what we advise in production circumstances.</p>
 Scala:
 ```scala
@@ -53,7 +52,6 @@ df = spark.read.option("inferschema","true").option("header","true").csv("/home/
 
 - **.csv("/home/batuhansaylam/Desktop/Big-Data_Spark/end-to-end_example/data/2015-summary.csv")** : This is a method of the DataFrameReader object and tells Spark that the file format to be read is CSV (Comma-Separated Values).
 
-## Action
 
 If we perform the take action on the DataFrame, we will be able to see the same results that we
 saw before when we used the command line</p>

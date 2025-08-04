@@ -5,7 +5,7 @@ Each file has a number of rows within it. These files are CSV files, meaning tha
 structured data format, with each row in the file representing a row in our future DataFrame.
 
 ```bash
-head end-to-end_example/data/2015-summary.csv
+head /home/batuhansaylam/Desktop/Big-Data_Spark/End-To-End_Example_Spark/data/2015-summary.csv
 ```
 
 Output:
@@ -27,7 +27,7 @@ Scala:
 val df = spark.read 
     .option("inferschema","true") 
     .option("header","true")
-    .csv("/home/batuhansaylam/Desktop/Big-Data_Spark/end-to-end_example/data/2015-summary.csv")
+    .csv("/home/batuhansaylam/Desktop/Big-Data_Spark/End-To-End_Example_Spark/data/2015-summary.csv")
 ```
 Output:
 ```bash
@@ -35,7 +35,7 @@ val df: org.apache.spark.sql.DataFrame = [DEST_COUNTRY_NAME: string, ORIGIN_COUN
 ```
 Python:
 ```python
-df = spark.read.option("inferschema","true").option("header","true").csv("/home/batuhansaylam/Desktop/Big-Data_Spark/end-to-end_example/data/2015-summary.csv")
+df = spark.read.option("inferschema","true").option("header","true").csv("/home/batuhansaylam/Desktop/Big-Data_Spark/End-To-End_Example_Spark/data/2015-summary.csv")
 ```
 - **.read**: This method returns a DataFrameReader object, which allows us to use chaining methods to structure the data reading process.
 
@@ -94,4 +94,21 @@ AdaptiveSparkPlan isFinalPlan=false
 +- Sort [count#19 ASC NULLS FIRST], true, 0
    +- Exchange rangepartitioning(count#19 ASC NULLS FIRST, 200), ENSURE_REQUIREMENTS, [plan_id=33]
       +- FileScan csv [DEST_COUNTRY_NAME#17,ORIGIN_COUNTRY_NAME#18,count#19] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/home/batuhansaylam/Desktop/Big-Data_Spark/end-to-end_example/dat..., PartitionFilters: [], PushedFilters: [], ReadSchema: struct<DEST_COUNTRY_NAME:string,ORIGIN_COUNTRY_NAME:string,count:int>
+```
+
+Explain plans are a bit arcane, but with a bit of practice it becomes second nature. You can read explain plans from top to bottom, the top being the end result, and the bottom being the source(s) of data. In this case, take a look at the first keywords. You will see sort, exchange, and FileScan. That’s because the sort of our data is actually a wide transformation because rows will need to be compared with one another. Don’t worry too much about understanding everything about explain plans at this point, they can just be helpful tools for debugging and improving your knowledge as you progress with Spark.
+
+By default, when we perform a shuffle, Spark outputs 200 shuffle partitions. Let's set the value to 5 to reduce the number of the output partitions from the shuffle:
+
+For both scala and python:
+
+```scala
+spark.conf.set("spark.sql.shuffle.partitions","5")
+
+df.sort("count").take(2)
+```
+
+Output:
+```bash
+val res3: Array[org.apache.spark.sql.Row] = Array([United States,Singapore,1], [Moldova,United States,1])
 ```
